@@ -86,47 +86,76 @@ public class Student {
         }
     }
 
- // Method to add a new student  
+    // Method to add a new student  
     public static void addStudent() {  
-        // Check if the student list has reached the maximum limit  
-        if (count < max) {  
+        if (count < max) {  // Check if the student list has reached the maximum limit  
             String studentId;
-            
             while (true) {
-                System.out.print("Enter student ID: ");  
-                studentId = sc.nextLine();
+                try {
+                    System.out.print("Enter student ID: ");  
+                    studentId = sc.nextLine(); // Keep raw input without using trim()
 
-                // Check if student ID already exists
-                boolean exists = false;
-                for (Student student : listStudent) {
-                    if (student.getStudentId().equals(studentId)) {
-                        exists = true;
-                        break;
+                    // Check if the input is empty
+                    if (studentId.isEmpty()) {
+                        throw new IllegalArgumentException("Error: Student ID cannot be empty! Please enter a valid ID.");
                     }
-                }
 
-                if (exists) {
-                    System.out.println("Error: Student ID already exists! Please enter a unique ID.");
-                } else {
-                    break; // Exit loop if ID is unique
+                    // Check if student ID already exists
+                    boolean exists = false;
+                    for (Student student : listStudent) {
+                        if (student.getStudentId().equals(studentId)) {
+                            exists = true;
+                            break;
+                        }
+                    }
+
+                    if (exists) {
+                        System.out.println("Error: Student ID already exists! Please enter a unique ID.");
+                    } else {
+                        break; // Exit loop if ID is unique and not empty
+                    }
+                } catch (IllegalArgumentException e) {
+                    System.out.println(e.getMessage()); // Display error message
                 }
             }
 
-            System.out.print("Enter student name: ");  
-            String studentName = sc.nextLine(); 
+            String studentName;
+            while (true) {
+                try {
+                    System.out.print("Enter student name: ");  
+                    studentName = sc.nextLine();
 
-            double mark;  
+                    // Check if the input is empty
+                    if (studentName.isEmpty()) {
+                        throw new IllegalArgumentException("Error: Student name cannot be empty! Please enter a valid name.");
+                    }
+
+                    break; // Exit loop if input is valid
+                } catch (IllegalArgumentException e) {
+                    System.out.println(e.getMessage()); // Display error message
+                }
+            }
+
+            double mark;
             while (true) {  
                 try {  
                     System.out.print("Enter student mark (0-10): ");  
-                    mark = sc.nextDouble(); // Read student mark  
+                    String input = sc.nextLine(); // Read input as String to check if empty
+                    
+                    // Check if input is empty
+                    if (input.isEmpty()) {
+                        System.out.println("Error: Mark cannot be empty! Please enter a valid mark.");
+                        continue; // Prompt user again
+                    }
 
-                    // Validate that the mark is within the allowed range  
+                    mark = Double.parseDouble(input); // Convert input to double
+                    
+                    // Validate that the mark is within the allowed range (0-10)
                     if (mark >= 0 && mark <= 10) {  
                         sc.nextLine(); // Clear buffer  
-                        break; // Exit loop if input is valid  
+                        break; // Exit loop if input is valid
                     } else {  
-                        System.out.println("Mark must be between 0 and 10.");  
+                        System.out.println("Error: Mark must be between 0 and 10.");  
                     }  
                 } catch (Exception e) {  
                     System.out.println("Invalid input! Please enter a number between 0 and 10.");  
@@ -144,7 +173,6 @@ public class Student {
         }  
     }
 
-
     // Method to display all students
     public static void printAllStudents() {
         if (listStudent.isEmpty()) {
@@ -157,49 +185,77 @@ public class Student {
         }
     }
 	
+    // Method to update information student
     public static void updateInfoStudent() {
-        System.out.println("Enter student ID to update: ");
-        String studentId = sc.nextLine();
-        boolean found = false;
+        // Prompt the user to enter the Student ID that needs to be updated
+        System.out.print("Enter student ID to update: ");
+        String studentId = sc.nextLine().trim(); // Read input and trim leading/trailing spaces
+        boolean found = false; // Flag to check if student exists
 
-        // Iterate through the student list to find the matching student ID
+        // Validate if the Student ID is empty
+        if (studentId.isEmpty()) {
+            System.out.println("Error: Student ID cannot be empty!"); // Display error message
+            return; // Exit the method
+        }
+
+        // Iterate through the list of students to find the matching Student ID
         for (Student student : listStudent) {
             if (student.getStudentId().equals(studentId)) {
-                System.out.print("Enter new student name: ");
-                String studentName = sc.nextLine();
-                double mark;  
+                String studentName;
+
+                // Loop until a valid student name is entered
+                while (true) {
+                    try {
+                        System.out.print("Enter new student name: ");
+                        studentName = sc.nextLine().trim(); // Read input and trim spaces
+
+                        // Validate if student name is empty
+                        if (studentName.isEmpty()) {
+                            throw new IllegalArgumentException("Error: Student name cannot be empty! Please enter a valid name.");
+                        }
+                        break; // Exit loop if valid input is provided
+                    } catch (IllegalArgumentException e) {
+                        System.out.println(e.getMessage()); // Display error message and retry input
+                    }
+                }
+
+                double mark; // Variable to store the student mark
+
+                // Loop until a valid mark is entered
                 while (true) {  
                     try {  
                         System.out.print("Enter new student mark (0-10): ");  
-                        mark = sc.nextDouble(); // Read student mark  
+                        mark = sc.nextDouble(); // Read student mark input
 
-                        // Validate that the mark is within the allowed range  
+                        // Validate if the mark is within the allowed range
                         if (mark >= 0 && mark <= 10) {  
-                            sc.nextLine(); // Clear buffer  
-                            break; // Exit loop if input is valid  
+                            sc.nextLine(); // Clear scanner buffer
+                            break; // Exit loop if valid input is provided  
                         } else {  
-                            System.out.println("Mark must be between 0 and 10.");  
+                            System.out.println("Error: Mark must be between 0 and 10."); // Display error message
                         }  
                     } catch (Exception e) {  
-                        System.out.println("Invalid input! Please enter a number between 0 and 10.");  
-                        sc.nextLine(); // Clear invalid input from scanner  
+                        System.out.println("Invalid input! Please enter a number between 0 and 10."); // Handle non-numeric inputs
+                        sc.nextLine(); // Clear invalid input from scanner buffer  
                     }  
                 }  
 
-                // Update student information
+                // Update the student details with new values
                 student.setStudentName(studentName);
                 student.setMark(mark);
-                System.out.println("Student information updated successfully!");
-                found = true;
-                break;
+                System.out.println("Student information updated successfully!"); // Confirmation message
+                found = true; // Set flag to indicate student was found
+                break; // Exit the loop since the student is found
             }
         }
-        // If student is not found
+
+        // If no student with the given ID was found, display an error message
         if (!found) {
-            System.out.println("Student not found.");
+            System.out.println("Error: Student ID not found in the system.");
         }
     }
 
+ // Method to delete information student
     public static void deleteStudent() {
         System.out.println("------------------------------------");
         System.out.println("Please choose delete method");
@@ -260,7 +316,8 @@ public class Student {
             }
         }
     }
-
+    
+    // Method to sort student
     public static void sortStudents() {
         while (true) {
             System.out.println("------------------------------------");
