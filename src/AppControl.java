@@ -60,6 +60,7 @@ public class AppControl {
                     Student.searchStudents(); // Search for a student
                     break;
                 case 7:
+                	System.out.println("Exiting program...");
                     exit = true; // Exit the program
                     break;
                 default:
