@@ -93,7 +93,7 @@ public class Student {
             while (true) {
                 try {
                     System.out.print("Enter student ID: ");  
-                    studentId = sc.nextLine(); // Keep raw input without using trim()
+                    studentId = sc.nextLine(); 
 
                     // Check if the input is empty
                     if (studentId.isEmpty()) {
@@ -403,7 +403,7 @@ public class Student {
     }
 
     
- // Method to search for a student by ID or name
+    // Method to search for a student by ID or name
     public static void searchStudents() {
         while (true) {
             System.out.println("------------------------------------");
