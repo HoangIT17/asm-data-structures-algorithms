@@ -40,6 +40,11 @@ public class Student {
         this.mark = mark;
     }
 
+    private static int max; // Maximum number of students
+    private static int count = 0; // Counter for students added
+    private static List<Student> listStudent = new ArrayList<>(); // List to store students
+    private static Scanner sc = new Scanner(System.in); // Scanner for user input
+	
     // Display student information along with ranking
     public void infoStudent() {
         System.out.println(this.studentId + " - " + this.studentName + " - " + this.mark + " - " + getRanking());
@@ -62,11 +67,6 @@ public class Student {
         }
     }
 
-    private static int max; // Maximum number of students
-    private static int count = 0; // Counter for students added
-    private static List<Student> listStudent = new ArrayList<>(); // List to store students
-    private static Scanner sc = new Scanner(System.in); // Scanner for user input
-	
     // Method to set maximum number of students
     public static void maxStudent() {
         while (true) {
