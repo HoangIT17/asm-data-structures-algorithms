@@ -45,6 +45,7 @@ public class AppControl {
                     Student.addStudent(); // Add a new student
                     break;
                 case 2:
+                	System.out.println("\nList student: ");
                     Student.printAllStudents(); // Display all student details
                     break;
                 case 3:

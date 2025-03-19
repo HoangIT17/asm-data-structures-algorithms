@@ -177,142 +177,178 @@ public class Student {
     public static void printAllStudents() {
         if (listStudent.isEmpty()) {
             System.out.println("Student list is empty.");
-        } else {
-            System.out.println("\nStudent List: ");
+        } else {           
             for (Student student : listStudent) {
                 student.infoStudent();
             }
         }
     }
 	
-    // Method to update information student
+    // Method to update student information
     public static void updateInfoStudent() {
-        // Prompt the user to enter the Student ID that needs to be updated
-        System.out.print("Enter student ID to update: ");
-        String studentId = sc.nextLine().trim(); // Read input and trim leading/trailing spaces
-        boolean found = false; // Flag to check if student exists
+        while (true) {
+            // Display update menu options
+            System.out.println("------------------------------------");
+            System.out.println("Please choose update method");
+            System.out.println("1. Update by student ID");
+            System.out.println("2. Update by student name");
+            System.out.println("3. Exit");
+            System.out.println("------------------------------------");
 
-        // Validate if the Student ID is empty
-        if (studentId.isEmpty()) {
-            System.out.println("Error: Student ID cannot be empty!"); // Display error message
-            return; // Exit the method
-        }
+            int choice = 0;
+            try {
+                System.out.print("Enter your choice: ");
+                choice = sc.nextInt();
+                sc.nextLine(); // Consume newline character
+            } catch (Exception e) {
+                System.out.println("Invalid input! Please enter an integer.");
+                sc.nextLine(); // Clear input buffer
+                continue; // Restart loop
+            }
 
-        // Iterate through the list of students to find the matching Student ID
-        for (Student student : listStudent) {
-            if (student.getStudentId().equals(studentId)) {
-                String studentName;
+            if (choice == 3) { // Exit condition
+                System.out.println("Exiting update menu...");
+                return;
+            }
 
-                // Loop until a valid student name is entered
-                while (true) {
-                    try {
-                        System.out.print("Enter new student name: ");
-                        studentName = sc.nextLine().trim(); // Read input and trim spaces
+            while (true) {
+                // Prompt user to enter search term (ID or name) based on choice
+                System.out.print("Enter " + (choice == 1 ? "student ID" : "student name") + " to update: ");
+                String searchTerm = sc.nextLine().trim();
 
-                        // Validate if student name is empty
-                        if (studentName.isEmpty()) {
-                            throw new IllegalArgumentException("Error: Student name cannot be empty! Please enter a valid name.");
+                if (searchTerm.isEmpty()) { // Check for empty input
+                    System.out.println("Error: Input cannot be empty! Try again.");
+                    continue;
+                }
+
+                boolean found = false;
+                for (Student student : listStudent) { // Iterate through student list
+                    if ((choice == 1 && student.getStudentId().equals(searchTerm)) ||
+                        (choice == 2 && student.getStudentName().equalsIgnoreCase(searchTerm))) {
+
+                        if (choice == 1) { // Update student name if searched by ID
+                            System.out.print("Enter new student name: ");
+                            String newStudentName = sc.nextLine().trim();
+                            while (newStudentName.isEmpty()) { // Validate input
+                                System.out.print("Error: Name cannot be empty! Enter again: ");
+                                newStudentName = sc.nextLine().trim();
+                            }
+                            student.setStudentName(newStudentName);
                         }
-                        break; // Exit loop if valid input is provided
-                    } catch (IllegalArgumentException e) {
-                        System.out.println(e.getMessage()); // Display error message and retry input
+
+                        if (choice == 2) { // Update student ID if searched by name
+                            String newStudentId;
+                            while (true) {
+                                System.out.print("Enter new student ID: ");
+                                newStudentId = sc.nextLine().trim();
+
+                                if (newStudentId.isEmpty()) {
+                                    System.out.println("Error: Student ID cannot be empty! Try again.");
+                                    continue;
+                                }
+
+                                boolean idExists = false;
+                                for (Student s : listStudent) {
+                                    if (s.getStudentId().equals(newStudentId)) {
+                                        idExists = true;
+                                        break;
+                                    }
+                                }
+
+                                if (idExists) {
+                                    System.out.println("Error: Student ID already exists! Try another.");
+                                } else {
+                                    break;
+                                }
+                            }
+                            student.setStudentId(newStudentId);
+                        }
+
+                        double mark;
+                        while (true) { // Validate student mark input
+                            try {
+                                System.out.print("Enter new student mark (0-10): ");
+                                mark = Double.parseDouble(sc.nextLine().trim());
+                                if (mark >= 0 && mark <= 10)
+                                    break; // Valid mark, exit loop
+                                System.out.println("Error: Mark must be between 0 and 10.");
+                            } catch (NumberFormatException e) {
+                                System.out.println("Invalid input! Please enter a number between 0 and 10.");
+                            }
+                        }
+
+                        student.setMark(mark); // Update student mark
+                        System.out.println("Student information updated successfully!");
+                        found = true;
+                        break; // Exit loop once update is done
                     }
                 }
 
-                double mark; // Variable to store the student mark
-
-                // Loop until a valid mark is entered
-                while (true) {  
-                    try {  
-                        System.out.print("Enter new student mark (0-10): ");  
-                        mark = sc.nextDouble(); // Read student mark input
-
-                        // Validate if the mark is within the allowed range
-                        if (mark >= 0 && mark <= 10) {  
-                            sc.nextLine(); // Clear scanner buffer
-                            break; // Exit loop if valid input is provided  
-                        } else {  
-                            System.out.println("Error: Mark must be between 0 and 10."); // Display error message
-                        }  
-                    } catch (Exception e) {  
-                        System.out.println("Invalid input! Please enter a number between 0 and 10."); // Handle non-numeric inputs
-                        sc.nextLine(); // Clear invalid input from scanner buffer  
-                    }  
-                }  
-
-                // Update the student details with new values
-                student.setStudentName(studentName);
-                student.setMark(mark);
-                System.out.println("Student information updated successfully!"); // Confirmation message
-                found = true; // Set flag to indicate student was found
-                break; // Exit the loop since the student is found
+                if (!found) { // Notify if no matching student is found
+                    System.out.println("Student not found. Try again or enter 'exit' to return to the menu.");
+                    String exitChoice = sc.nextLine().trim();
+                    if (exitChoice.equalsIgnoreCase("exit")) {
+                        return;
+                    }
+                } else {
+                    break;
+                }
             }
-        }
-
-        // If no student with the given ID was found, display an error message
-        if (!found) {
-            System.out.println("Error: Student ID not found in the system.");
         }
     }
-
- // Method to delete information student
+    
+    // Method to delete information student
     public static void deleteStudent() {
-        System.out.println("------------------------------------");
-        System.out.println("Please choose delete method");
-        System.out.println("1. Delete by student ID");
-        System.out.println("2. Delete by student name");
-        System.out.println("3. Exit");
-        System.out.println("------------------------------------");
-
-        int choice;
-
-        // Loop until the user enters a valid choice (1, 2, or 3)
         while (true) {
-            try {
-                choice = sc.nextInt(); // Read user input
-                sc.nextLine(); // Consume the newline character
+            // Display delete menu options
+            System.out.println("------------------------------------");
+            System.out.println("Please choose delete method");
+            System.out.println("1. Delete by student ID");
+            System.out.println("2. Delete by student name");
+            System.out.println("3. Exit");
+            System.out.println("------------------------------------");
 
-                if (choice == 1 || choice == 2 || choice == 3) {
-                    break; // Exit the loop if input is valid
-                } else {
-                    System.out.println("Invalid choice. Please enter 1, 2, or 3.");
+            int choice;
+            try {
+                System.out.print("Enter your choice: ");
+                choice = sc.nextInt();
+                sc.nextLine(); // Consume newline character
+                if (choice == 3) {
+                    System.out.println("Returning to the main menu...");
+                    return;
                 }
             } catch (Exception e) {
-                System.out.println("Invalid input. Please enter a number (1, 2, or 3).");
-                sc.nextLine(); // Clear the input buffer
+                System.out.println("Invalid input. Please enter a number (1, 2, or 3). ");
+                sc.nextLine(); // Clear input buffer
+                continue; // Restart loop
             }
-        }
 
-        // Exit if user chooses option 3
-        if (choice == 3) {
-            System.out.println("Returning to the main menu...");
-            return;
-        }
+            boolean deleted = false;
+            while (!deleted) {
+                // Prompt user to enter student ID or name for deletion
+                System.out.print("Enter " + (choice == 1 ? "student ID" : "student name") + " to delete: ");
+                String searchTerm = sc.nextLine().trim();
 
-        boolean deleted = false;
-
-        // Loop until a valid student is found and deleted
-        while (!deleted) {
-            // Ask for student information based on the chosen delete method
-            System.out.print("Enter the student information to delete (Student ID or Student Name): ");
-            String searchTerm = sc.nextLine();
-
-            // Iterate through the student list to find and delete the matching student
-            for (int i = 0; i < listStudent.size(); i++) {
-                Student student = listStudent.get(i);
-                if ((choice == 1 && student.getStudentId().equals(searchTerm)) ||
-                    (choice == 2 && student.getStudentName().equalsIgnoreCase(searchTerm))) {
-                    listStudent.remove(i); // Remove the student from the list
-                    count--; // Decrease the student count
-                    System.out.println("Student deleted successfully.");
-                    deleted = true;
-                    break; // Exit loop after deleting
+                for (int i = 0; i < listStudent.size(); i++) {
+                    Student student = listStudent.get(i);
+                    // Check if student matches the input for deletion
+                    if ((choice == 1 && student.getStudentId().equals(searchTerm)) ||
+                        (choice == 2 && student.getStudentName().equalsIgnoreCase(searchTerm))) {
+                        listStudent.remove(i); // Remove student from list
+                        count--; // Decrement student count
+                        System.out.println("Student deleted successfully.");
+                        deleted = true;
+                        break;
+                    }
                 }
-            }
 
-            // If no student was found, ask for input again
-            if (!deleted) {
-                System.out.println("Student not found. Please enter a valid student ID or name.");
+                if (!deleted) { // If no student found, prompt user for retry or exit
+                    System.out.println("Student not found. Try again or enter 'exit' to return to the menu.");
+                    String exitChoice = sc.nextLine().trim();
+                    if (exitChoice.equalsIgnoreCase("exit")) {
+                        return; // Exit deletion process if user types 'exit'
+                    }
+                }
             }
         }
     }
@@ -330,6 +366,7 @@ public class Student {
 
             int choice = 0;
             try {
+            	System.out.print("Enter your choice: ");
                 choice = sc.nextInt(); // Read user input
                 sc.nextLine(); // Consume the newline character
             } catch (Exception e) {
@@ -337,19 +374,22 @@ public class Student {
                 sc.nextLine(); // Clear input buffer
                 continue; // Restart loop to ask for input again
             }
-
+            
             // Process user choice
             switch (choice) {
                 case 1:
                     sortById(); // Sort by student ID
+                    System.out.println("\nList of students sorted by student id: ");
                     printAllStudents();
                     break;
                 case 2:
                     sortByName(); // Sort by student name
+                    System.out.println("\nList of students sorted by student name: ");
                     printAllStudents();
                     break;
                 case 3:
                     sortByMark(); // Sort by student mark
+                    System.out.println("\nList of students sorted by student mark: ");
                     printAllStudents();
                     break;
                 case 4:
@@ -361,7 +401,6 @@ public class Student {
             }
         }
     }
-
 
     // Sort the student list by ID using insertion sort
     private static void sortById() {
@@ -401,9 +440,8 @@ public class Student {
             listStudent.set(j + 1, key);
         }
     }
-
-    
-    // Method to search for a student by ID or name
+ 
+	// Method to search for a student by ID or name
     public static void searchStudents() {
         while (true) {
             System.out.println("------------------------------------");
@@ -415,6 +453,7 @@ public class Student {
 
             int choice = 0;
             try {
+                System.out.print("Enter your choice: ");
                 choice = sc.nextInt();
                 sc.nextLine(); // Consume newline
             } catch (Exception e) {
@@ -428,8 +467,8 @@ public class Student {
                 return; // Exit method
             } else if (choice == 1 || choice == 2) {
                 while (true) { // Keep searching until student is found or user exits
-                    System.out.println("Enter search term (student name or student ID):");
-                    String searchTerm = sc.nextLine();
+                    System.out.print("Enter " + (choice == 1 ? "student name" : "student ID") + " to search: ");
+                    String searchTerm = sc.nextLine().trim();
                     boolean found = false;
 
                     for (Student student : listStudent) {
@@ -446,7 +485,7 @@ public class Student {
                         break; // Exit loop if student is found
                     } else {
                         System.out.println("Student not found. Try again or enter 'exit' to return to the menu.");
-                        String exitChoice = sc.nextLine();
+                        String exitChoice = sc.nextLine().trim();
                         if (exitChoice.equalsIgnoreCase("exit")) {
                             return; // Exit search if user types 'exit'
                         }
@@ -457,7 +496,7 @@ public class Student {
             }
         }
     }
-}	
+}
 
 
 
