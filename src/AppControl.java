@@ -5,7 +5,7 @@ public class AppControl {
         Scanner sc = new Scanner(System.in);
         
         // Initialize the maximum number of students
-        Student.maxStudent(); 
+        ManagerStudent.maxStudent(); 
 
         boolean exit = false;
         while (!exit) {
@@ -42,23 +42,23 @@ public class AppControl {
             // Handle user choice
             switch (choice) {
                 case 1: 
-                    Student.addStudent(); // Add a new student
+                    ManagerStudent.addStudent(); // Add a new student
                     break;
                 case 2:
                 	System.out.println("\nList student: ");
-                    Student.printAllStudents(); // Display all student details
+                	ManagerStudent.printAllStudents(); // Display all student details
                     break;
                 case 3:
-                    Student.updateInfoStudent(); // Update student information
+                	ManagerStudent.updateInfoStudent(); // Update student information
                     break;
                 case 4:
-                    Student.deleteStudent(); // Remove a student
+                	ManagerStudent.deleteStudent(); // Remove a student
                     break;
                 case 5:
-                    Student.sortStudents(); // Sort students
+                	ManagerStudent.sortStudents(); // Sort students
                     break;
                 case 6:
-                    Student.searchStudents(); // Search for a student
+                	ManagerStudent.searchStudents(); // Search for a student
                     break;
                 case 7:
                 	System.out.println("Exiting program...");
